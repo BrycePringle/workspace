@@ -80,7 +80,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Item>(entity =>
         {
             entity.HasIndex(e => e.Title).IsUnique();
-            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Title).HasMaxLength(100);
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.DailyRate).HasColumnType("numeric(8,2)");
             entity.Property(e => e.Category).HasMaxLength(100);
