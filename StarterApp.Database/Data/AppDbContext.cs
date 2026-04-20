@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net.ServerSentEvents;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StarterApp.Database.Models;
@@ -37,6 +38,7 @@ public class AppDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<Item> Items { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -74,6 +76,15 @@ public class AppDbContext : DbContext
                   .WithMany(r => r.UserRoles)
                   .HasForeignKey(ur => ur.RoleId);
         });
-    }
 
+        modelBuilder.Entity<Item>(entity =>
+        {
+            entity.HasIndex(e => e.Title).IsUnique();
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.DailyRate).HasColumnType("numeric(8,2)");
+            entity.Property(e => e.Category).HasMaxLength(100);
+            entity.Property(e => e.Location).HasMaxLength(100);
+        });
+    }
 }
