@@ -1,4 +1,4 @@
-public class RentalService : IRentalService
+/*public class RentalService : IRentalService
 {
     private readonly IRentalRepository _rentalRepository;
     private readonly IItemRepository _itemRepository;
@@ -12,4 +12,4 @@ public class RentalService : IRentalService
             r.StartDate < endDate &&
             r.EndDate > startDate);
     }
-}
+}*/

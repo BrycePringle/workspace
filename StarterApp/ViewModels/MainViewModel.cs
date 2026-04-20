@@ -89,6 +89,12 @@ public partial class MainViewModel : BaseViewModel
         }
     }
 
+    [RelayCommand]
+    private async Task NavigateToItemsAsync()
+    {
+        await Shell.Current.GoToAsync("ItemsListPage");
+    }
+
     /// @brief Navigates to the user profile page
     /// @details Relay command that navigates to the profile management page
     /// @return A task representing the asynchronous navigation operation
