@@ -3,7 +3,7 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:StarterApp.ViewModels"
-             x:DataType="viewmodels:ItemsListViewModel"
+             x:DataType="viewmodels:ItemsListViewModel;assembly=StarterApp.Database"
              Title="{Binding Title}">
     <Grid>
         <Grid.RowDefinitions>
@@ -26,7 +26,7 @@
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="viewmodels:ItemsListViewModel">
+                    <DataTemplate>
                         <Grid Padding="15,10">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />

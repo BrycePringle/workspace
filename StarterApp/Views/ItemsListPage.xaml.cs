@@ -9,4 +9,13 @@ public partial class ItemsListPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is ItemsListViewModel vm)
+        {
+            await vm.LoadItemsCommand.ExecuteAsync(null);
+        }
+    }
 }
