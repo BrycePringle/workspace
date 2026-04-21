@@ -21,6 +21,7 @@ public partial class ItemsListViewModel : BaseViewModel
 
     public AsyncRelayCommand LoadItemsCommand { get; }
 
+// add _nav?
     public ItemsListViewModel(IItemRepository itemRepository)
     {
         _itemRepository = itemRepository;
@@ -32,7 +33,6 @@ public partial class ItemsListViewModel : BaseViewModel
         var items = await _itemRepository.GetAllAsync();
         Items = new ObservableCollection<Item>(items);
     }
-
 
     [RelayCommand]
     private async Task NavigateToItemDetailAsync(Item item)
