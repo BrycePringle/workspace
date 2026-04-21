@@ -32,4 +32,14 @@ public partial class ItemsListViewModel : BaseViewModel
         var items = await _itemRepository.GetAllAsync();
         Items = new ObservableCollection<Item>(items);
     }
+
+
+    [RelayCommand]
+    private async Task NavigateToItemDetailAsync(Item item)
+    {
+        await Shell.Current.GoToAsync("ItemDetailPage", new Dictionary<string, object>
+        {
+            { "itemId", item.Id }
+        });
+    }
 }

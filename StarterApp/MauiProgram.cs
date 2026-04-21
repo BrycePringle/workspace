@@ -43,6 +43,8 @@ public static class MauiProgram
         builder.Services.AddTransient<TempPage>();
         builder.Services.AddTransient<ItemsListViewModel>();
         builder.Services.AddTransient<ItemsListPage>();
+        builder.Services.AddTransient<ItemDetailViewModel>();
+        builder.Services.AddTransient<ItemDetailPage>();
 
         builder.Services.AddTransient<IItemRepository, ItemRepository>();
 
