@@ -99,9 +99,9 @@ public partial class MainViewModel : BaseViewModel
     /// @details Relay command that navigates to the profile management page
     /// @return A task representing the asynchronous navigation operation
     [RelayCommand]
-    private async Task NavigateToProfileAsync()
+    private async Task NavigateToCreateItemAsync()
     {
-        await _navigationService.NavigateToAsync("TempPage");
+        await _navigationService.NavigateToAsync("CreateItemPage");
     }
 
     /// @brief Navigates to the settings page

@@ -20,9 +20,32 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+
+        // -------------------------------------------------------------------
+        // Set useSharedApi to true to connect to the shared REST API,
+        // or false to use the local PostgreSQL database.
+        // This is an example of dependency injection — the ViewModels do
+        // not change regardless of which implementation is registered here.
+        // -------------------------------------------------------------------
+        const bool useSharedApi = false;
+
+        if (useSharedApi)
+        {
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://set09102-api.b-davison.workers.dev/")
+            };
+            builder.Services.AddSingleton(httpClient);
+            builder.Services.AddSingleton<IAuthenticationService, ApiAuthenticationService>();
+        }
+        else
+        {
+            builder.Services.AddDbContext<AppDbContext>();
+            builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
+        }
+
         builder.Services.AddDbContext<AppDbContext>();
 
-        builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         builder.Services.AddSingleton<AppShellViewModel>();

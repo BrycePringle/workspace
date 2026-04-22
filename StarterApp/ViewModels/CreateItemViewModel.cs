@@ -14,7 +14,7 @@ public partial class CreateItemViewModel : BaseViewModel
     private readonly IItemRepository _itemRepository;
 
     [ObservableProperty]
-    private string title = string.Empty;
+    private string itemTitle = string.Empty;
 
     [ObservableProperty]
     private string description = string.Empty;
@@ -31,15 +31,15 @@ public partial class CreateItemViewModel : BaseViewModel
     [ObservableProperty]
     private bool acceptTerms;
 
-    public CreateItemViewModel(INavigationService navigationService)
+    public CreateItemViewModel(INavigationService navigationService, IItemRepository itemRepository)
     {
         _navigationService = navigationService;
-        _itemRepository = _itemRepository;
+        _itemRepository = itemRepository;
         Title = "List Item";
     }
-
+/*
     [RelayCommand]
-    private async Task CreateAsync()
+    private async Task CreateItemAsync()
     {
         if (IsBusy)
             return;
@@ -61,19 +61,42 @@ public partial class CreateItemViewModel : BaseViewModel
         await Application.Current.MainPage.DisplayAlert("Success", "Item created!", "OK");
         await _navigationService.NavigateBackAsync();
     }
-
-    /// @brief Navigates back to the login page
-    /// @details Relay command that returns to the login page
-    /// @return A task representing the asynchronous navigation operation
+*/
     [RelayCommand]
-    private async Task NavigateBackToLoginAsync()
+    private async Task CreateItemAsync()
     {
-        await _navigationService.NavigateBackAsync();
-    }
+        if (IsBusy) return;
+        if (!ValidateForm()) return;
 
+        try
+        {
+            IsBusy = true;
+            var item = new Item
+            {
+                Title = itemTitle,
+                Description = description,
+                DailyRate = decimal.TryParse(dailyRate, out var rate) ? rate : 0,
+                Category = category,
+                Location = location
+            };
+
+            await _itemRepository.CreateAsync(item);
+            await Application.Current.MainPage.DisplayAlert("Success", "Item created!", "OK");
+            await _navigationService.NavigateBackAsync();
+        }
+        catch (Exception ex)
+        {
+            var message = ex.InnerException?.Message ?? ex.Message;
+            await Application.Current.MainPage.DisplayAlert("Error", message, "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+    }
+    }
     private bool ValidateForm()
     {
-        if (string.IsNullOrWhiteSpace(title))
+        if (string.IsNullOrWhiteSpace(itemTitle))
         {
             SetError("Title is required");
             return false;
