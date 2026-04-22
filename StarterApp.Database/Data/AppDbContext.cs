@@ -86,5 +86,20 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Category).HasMaxLength(100);
             entity.Property(e => e.Location).HasMaxLength(100);
         });
+
+        modelBuilder.Entity<Rental>(entity =>
+        {
+            entity.Property(e => e.Status).HasMaxLength(10);
+            entity.Property(e => e.TotalCost).HasColumnType("numeric(8,2)");
+
+            entity.HasOne(r => r.Item)
+                .WithMany()
+                .HasForeignKey(r => r.ItemId);
+
+            entity.HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId);
+        });
+        
     }
 }

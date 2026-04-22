@@ -3,31 +3,31 @@ using Microsoft.EntityFrameworkCore;
 using StarterApp.Database.Models;
 namespace StarterApp.Database.Data;
 
-public class ItemRepository : IItemRepository
+public class RentalRepository : IRentalRepository
 {
     private readonly AppDbContext _context;
 
-    public ItemRepository(AppDbContext context)
+    public RentalRepository(AppDbContext context)
     {
         _context = context;
     }
 
-    public async Task<List<Item>> GetAllAsync() =>
-        await _context.Items.ToListAsync();
+    public async Task<List<Rental>> GetAllAsync() =>
+        await _context.Rentals.ToListAsync();
 
-    public async Task<Item> GetByIdAsync(int id) =>
-        await _context.Items.FindAsync(id);
+    public async Task<Rental> GetByIdAsync(int id) =>
+        await _context.Rentals.FindAsync(id);
 
-    public async Task<Item> CreateAsync(Item item)
+    public async Task<Rental> CreateAsync(Rental rental)
     {
-        _context.Items.Add(item);
+        _context.Rentals.Add(rental);
         await _context.SaveChangesAsync();
-        return item;
+        return rental;
     }
 
-    public async Task UpdateAsync(Item item)
+    public async Task UpdateAsync(Rental rental)
     {
-        _context.Items.Update(item);
+        _context.Items.Update(rental);
         await _context.SaveChangesAsync();
     }
 /*
