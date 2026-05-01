@@ -56,7 +56,7 @@
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="8" />
                 </Border.StrokeShape>
-                <Entry Text="{Binding Title}"
+                <Entry Text="{Binding ItemTitle}"
                        Placeholder="Title"
                        ReturnType="Next"
                        Margin="15,10" />
@@ -101,20 +101,6 @@
                 <Entry Text="{Binding Category}"
                        Placeholder="Category"
                        ReturnType="Next"
-                       Margin="15,10" />
-            </Border>
-
-            <!-- Location -->
-            <Border Grid.Row="6"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
-                    StrokeThickness="1"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="8" />
-                </Border.StrokeShape>
-                <Entry Text="{Binding Location}"
-                       Placeholder="Location"
-                       ReturnType="Done"
                        Margin="15,10" />
             </Border>
 

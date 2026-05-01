@@ -1,5 +1,6 @@
 using System.Globalization;
 using StarterApp.Database.Models;
+using StarterApp.Database.Data;
 
 namespace StarterApp.Services;
 public class RentalService : IRentalService
@@ -12,11 +13,11 @@ public class RentalService : IRentalService
         _rentalRepository = rentalRepository;
         _itemRepository = itemRepository;
     }
-    public async Task<bool> CanRentItem(int itemId, DateTime startDate, DateTime endDate)
+    public async Task<bool> CanRentItemAsync(int itemId, DateTime startDate, DateTime endDate)
     {
         // Check for date overlaps with existing approved rentals
         var existingRentals = await _rentalRepository.GetByItemIdAsync(itemId);
-        return !existingRentals.Any(r =>
+        return !existingRentals.AsEnumerable().Any<Rental>(r => // simplify
             r.Status == "Approved" &&
             r.StartDate < endDate &&
             r.EndDate > startDate);
@@ -39,8 +40,8 @@ public class RentalService : IRentalService
         {
             ItemId = itemId,
             UserId = borrowerId,
-            StartDate = startDate,
-            EndDate = endDate,
+            StartDate = DateTime.SpecifyKind(startDate, DateTimeKind.Utc),
+            EndDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc),
             Status = "Pending",
             TotalCost = item.DailyRate * days
         };

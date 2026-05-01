@@ -10,8 +10,9 @@ namespace StarterApp.ViewModels;
 public partial class ItemsListViewModel : BaseViewModel 
 {
     private readonly INavigationService _navigationService;
+    private readonly ILocationService _locationService;
     private readonly IItemRepository _itemRepository;
-    private ObservableCollection<Item> _items;
+    private ObservableCollection<Item> _items = new();
 
     public ObservableCollection<Item> Items
     {
@@ -19,19 +20,37 @@ public partial class ItemsListViewModel : BaseViewModel
         set => SetProperty(ref _items, value);
     }
 
-    public AsyncRelayCommand LoadItemsCommand { get; }
+    [ObservableProperty]
+    private double _radius = 10; // default 10km
 
-// add _nav?
-    public ItemsListViewModel(IItemRepository itemRepository)
+    public ItemsListViewModel(IItemRepository itemRepository, ILocationService locationService, INavigationService navigationService)
     {
         _itemRepository = itemRepository;
-        LoadItemsCommand = new AsyncRelayCommand(LoadItemsAsync);
+        _locationService = locationService;
+        _navigationService = navigationService;
     }
 
+    [RelayCommand]
     private async Task LoadItemsAsync()
     {
-        var items = await _itemRepository.GetAllAsync();
-        Items = new ObservableCollection<Item>(items);
+        try
+        {
+            var location = await _locationService.GetCurrentLocationAsync();
+            var effectiveRadius = _radius > 0 ? _radius : 10;
+
+            // NTS Point: X = longitude, Y = latitude
+            var items = await _itemRepository.GetNearbyAsync(location.Y, location.X, effectiveRadius);
+            Items = new ObservableCollection<Item>(items);
+        }
+        catch (Exception ex)
+        {
+            var message = ex.InnerException?.Message ?? ex.Message;
+            System.Diagnostics.Debug.WriteLine($"CRASH: {message}");
+            System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            
+            if (Application.Current?.MainPage != null)
+                await Application.Current.MainPage.DisplayAlert("Error", message, "OK");
+        }
     }
 
     [RelayCommand]

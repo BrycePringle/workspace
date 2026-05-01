@@ -5,14 +5,48 @@
              xmlns:viewmodels="clr-namespace:StarterApp.ViewModels"
              Title="Items for Rent"
              x:Name="ThisPage">
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <RefreshView Grid.Row="0"
-                     Command="{Binding LoadItemsCommand}">
+        <!-- Radius + Refresh row -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="15,10">
+            <Label Grid.Column="0"
+                Text="Radius (km)"
+                VerticalOptions="Center"
+                Margin="0,0,8,0"/>
+                
+            <Border Grid.Column="1"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                    StrokeThickness="1"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8" />
+                </Border.StrokeShape>
+                <Entry Text="{Binding Radius}"
+                       Placeholder="Enter search range"
+                       ReturnType="Search"
+                       ReturnCommand="{Binding LoadItemsCommand}"
+                       Margin="15,10" />
+            </Border>
 
+            <Button Grid.Column="2"
+                    Text="↻"
+                    Command="{Binding LoadItemsCommand}"
+                    FontSize="20"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    CornerRadius="8"
+                    WidthRequest="48"
+                    HeightRequest="48"
+                    Margin="8,0,0,0"/>
+        </Grid>
+
+        <RefreshView Grid.Row="1"
+                     Command="{Binding LoadItemsCommand}">
             <CollectionView ItemsSource="{Binding Items}"
                             SelectionMode="None">
 
@@ -28,7 +62,6 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="15,10">
-
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer 
                                     Command="{Binding BindingContext.NavigateToItemDetailCommand, Source={x:Reference ThisPage}}"
@@ -70,7 +103,7 @@
             </CollectionView>
         </RefreshView>
 
-        <ActivityIndicator Grid.Row="0"
+        <ActivityIndicator Grid.Row="1"
                            IsVisible="{Binding IsBusy}"
                            IsRunning="{Binding IsBusy}"
                            Color="DodgerBlue"

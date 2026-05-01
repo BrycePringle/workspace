@@ -47,6 +47,11 @@ public static class MauiProgram
         builder.Services.AddDbContext<AppDbContext>();
 
         builder.Services.AddSingleton<INavigationService, NavigationService>();
+        builder.Services.AddSingleton<IRentalService, RentalService>();
+        builder.Services.AddSingleton<ILocationService, LocationService>();
+
+        builder.Services.AddTransient<IItemRepository, ItemRepository>();
+        builder.Services.AddTransient<IRentalRepository, RentalRepository>();
 
         builder.Services.AddSingleton<AppShellViewModel>();
         builder.Services.AddSingleton<AppShell>();
@@ -70,11 +75,8 @@ public static class MauiProgram
         builder.Services.AddTransient<ItemDetailPage>();
         builder.Services.AddTransient<CreateItemViewModel>();
         builder.Services.AddTransient<CreateItemPage>();
-        builder.Services.AddTransient<RentalsViewModel>();
-        builder.Services.AddTransient<RentalsPage>();
-
-        builder.Services.AddTransient<IItemRepository, ItemRepository>();
-
+  //      builder.Services.AddTransient<RentalsViewModel>();
+  //      builder.Services.AddTransient<RentalsPage>();
 #if DEBUG
         builder.Logging.AddDebug();
 #endif

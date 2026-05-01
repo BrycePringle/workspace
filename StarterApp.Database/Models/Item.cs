@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using GeoPoint = NetTopologySuite.Geometries.Point;
 
 namespace StarterApp.Database.Models;
 
@@ -18,5 +18,5 @@ public class Item
     [Required]
     public decimal DailyRate { get; set; }
     public string Category { get; set; }
-    public string Location { get; set; }
+    public GeoPoint Location { get; set; }
 }

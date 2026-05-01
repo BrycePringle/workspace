@@ -5,6 +5,7 @@ using StarterApp.Database.Data;
 using StarterApp.Database.Models;
 using System.Text.RegularExpressions;
 using System.Net.ServerSentEvents;
+using GeoPoint = NetTopologySuite.Geometries.Point;
 
 namespace StarterApp.ViewModels;
 
@@ -12,6 +13,7 @@ public partial class CreateItemViewModel : BaseViewModel
 {
     private readonly INavigationService _navigationService;
     private readonly IItemRepository _itemRepository;
+    private readonly ILocationService _locationService;
 
     [ObservableProperty]
     private string itemTitle = string.Empty;
@@ -26,14 +28,14 @@ public partial class CreateItemViewModel : BaseViewModel
     private string category = string.Empty;
 
     [ObservableProperty]
-    private string location = string.Empty;
-
-    [ObservableProperty]
     private bool acceptTerms;
 
-    public CreateItemViewModel(INavigationService navigationService, IItemRepository itemRepository)
+    private GeoPoint location;
+
+    public CreateItemViewModel(INavigationService navigationService, IItemRepository itemRepository, ILocationService locationService)
     {
         _navigationService = navigationService;
+        _locationService = locationService;
         _itemRepository = itemRepository;
         Title = "List Item";
     }
@@ -62,15 +64,31 @@ public partial class CreateItemViewModel : BaseViewModel
         await _navigationService.NavigateBackAsync();
     }
 */
+
     [RelayCommand]
-    private async Task CreateItemAsync()
-    {
+    private async Task CreateItemAsync() {
+
         if (IsBusy) return;
         if (!ValidateForm()) return;
 
         try
         {
             IsBusy = true;
+
+            // request location permission
+            var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+            }
+
+            if (status != PermissionStatus.Granted)
+                throw new PermissionException("Location permission was denied");
+
+            // if ok, then use location service
+            var location = await _locationService.GetCurrentLocationAsync();
+
             var item = new Item
             {
                 Title = itemTitle,
@@ -92,8 +110,9 @@ public partial class CreateItemViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+        }
     }
-    }
+
     private bool ValidateForm()
     {
         if (string.IsNullOrWhiteSpace(itemTitle))
@@ -117,12 +136,6 @@ public partial class CreateItemViewModel : BaseViewModel
         if (string.IsNullOrWhiteSpace(category))
         {
             SetError("Please enter a category");
-            return false;
-        }
-
-        if (string.IsNullOrWhiteSpace(location))
-        {
-            SetError("Location is required");
             return false;
         }
 

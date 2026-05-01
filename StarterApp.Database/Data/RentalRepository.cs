@@ -1,6 +1,6 @@
 using StarterApp.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using StarterApp.Database.Models;
+
 namespace StarterApp.Database.Data;
 
 public class RentalRepository : IRentalRepository
@@ -18,6 +18,9 @@ public class RentalRepository : IRentalRepository
     public async Task<Rental> GetByIdAsync(int id) =>
         await _context.Rentals.FindAsync(id);
 
+    public async Task<List<Rental>> GetByItemIdAsync(int itemId) =>
+        await _context.Rentals.Where(r => r.ItemId == itemId).ToListAsync();
+
     public async Task<Rental> CreateAsync(Rental rental)
     {
         _context.Rentals.Add(rental);
@@ -27,19 +30,8 @@ public class RentalRepository : IRentalRepository
 
     public async Task UpdateAsync(Rental rental)
     {
-        _context.Items.Update(rental);
+        _context.Rentals.Update(rental);
         await _context.SaveChangesAsync();
     }
-/*
-    public async Task<List<Rental>> GetNearbyAsync(double lat, double lon, double radiusKm)
-    {
-        // PostGIS spatial query abstracted here
-        var point = new Point(lon, lat) { SRID = 4326 };
-        return await _context.Items
-            .Where(i => i.Location.Distance(point) <= radiusKm * 1000)
-            .ToListAsync();
-    }
-*/
-
 
 }

@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StarterApp.Database.Models;
+using Npgsql;
 
 namespace StarterApp.Database.Data;
 
@@ -32,13 +33,14 @@ public class AppDbContext : DbContext
             connectionString = config.GetConnectionString("DevelopmentConnection");
         }
 
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.UseNpgsql(connectionString, o => o.UseNetTopologySuite());
     }
 
     public DbSet<Role> Roles { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Item> Items { get; set; }
+    public DbSet<Rental> Rentals { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -84,22 +86,18 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.DailyRate).HasColumnType("numeric(8,2)");
             entity.Property(e => e.Category).HasMaxLength(100);
-            entity.Property(e => e.Location).HasMaxLength(100);
+            entity.Property(e => e.Location).HasColumnType("geography(Point, 4326)");
         });
 
         modelBuilder.Entity<Rental>(entity =>
         {
             entity.Property(e => e.Status).HasMaxLength(10);
             entity.Property(e => e.TotalCost).HasColumnType("numeric(8,2)");
-
-            entity.HasOne(r => r.Item)
-                .WithMany()
-                .HasForeignKey(r => r.ItemId);
-
-            entity.HasOne(r => r.User)
-                .WithMany()
-                .HasForeignKey(r => r.UserId);
-        });
         
+            entity.HasOne(r => r.Item).WithMany().HasForeignKey(r => r.ItemId);
+
+            entity.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
+            
+        }); 
     }
 }

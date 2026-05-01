@@ -1,6 +1,7 @@
 using StarterApp.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using StarterApp.Database.Models;
+using NetTopologySuite.Geometries;
+
 namespace StarterApp.Database.Data;
 
 public class ItemRepository : IItemRepository
@@ -30,16 +31,14 @@ public class ItemRepository : IItemRepository
         _context.Items.Update(item);
         await _context.SaveChangesAsync();
     }
-/*
-    public async Task<List<Rental>> GetNearbyAsync(double lat, double lon, double radiusKm)
+
+    public async Task<List<Item>> GetNearbyAsync(double lat, double lon, double radiusKm)
     {
-        // PostGIS spatial query abstracted here
-        var point = new Point(lon, lat) { SRID = 4326 };
+        var center = new Point(lon, lat) { SRID = 4326 };
+        var radiusMeters = radiusKm * 1000;
+
         return await _context.Items
-            .Where(i => i.Location.Distance(point) <= radiusKm * 1000)
+            .Where(i => i.Location.IsWithinDistance(center, radiusMeters))
             .ToListAsync();
     }
-*/
-
-
 }
