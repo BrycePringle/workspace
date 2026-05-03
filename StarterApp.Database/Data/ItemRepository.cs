@@ -34,11 +34,16 @@ public class ItemRepository : IItemRepository
 
     public async Task<List<Item>> GetNearbyAsync(double lat, double lon, double radiusKm)
     {
-        var center = new Point(lon, lat) { SRID = 4326 };
+        var point = new Point(lon, lat) { SRID = 4326 };
         var radiusMeters = radiusKm * 1000;
-
         return await _context.Items
-            .Where(i => i.Location.IsWithinDistance(center, radiusMeters))
+                .FromSqlRaw(@"
+                SELECT * FROM ""items""
+                WHERE ST_DWithin(
+                    ""Location""::geography,
+                    ST_MakePoint({0}, {1})::geography,
+                    {2}
+                )", lon, lat, radiusMeters)
             .ToListAsync();
     }
 }

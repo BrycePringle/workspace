@@ -42,6 +42,8 @@ public class AppDbContext : DbContext
     public DbSet<Item> Items { get; set; }
     public DbSet<Rental> Rentals { get; set; }
 
+    public DbSet<Review> Reviews { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -95,9 +97,16 @@ public class AppDbContext : DbContext
             entity.Property(e => e.TotalCost).HasColumnType("numeric(8,2)");
         
             entity.HasOne(r => r.Item).WithMany().HasForeignKey(r => r.ItemId);
-
             entity.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
-            
+        }); 
+
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.Property(e => e.Name).HasMaxLength(30);
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(r => r.Rating).HasColumnType("numeric(4,2)");
+
+            entity.HasOne(r => r.Item).WithMany().HasForeignKey(r => r.ItemId);
         }); 
     }
 }

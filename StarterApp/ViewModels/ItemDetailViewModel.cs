@@ -89,4 +89,21 @@ public partial class ItemDetailViewModel : BaseViewModel
             await Application.Current.MainPage.DisplayAlert("Error", message, "OK");
         }
     }
+
+        [RelayCommand]
+        private async Task NavigateToReviewsAsync(Item item)
+        {    
+            System.Diagnostics.Debug.WriteLine($"NavigateToReviews called, item: {item?.Id} - {item?.Title}");
+    
+            if (item == null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Item is null", "OK");
+                return;
+            }
+            
+            await Shell.Current.GoToAsync("ReviewsPage", new Dictionary<string, object>
+            {
+                { "itemId", item.Id }
+            });
+        }
 }

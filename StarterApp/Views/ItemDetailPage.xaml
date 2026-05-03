@@ -46,7 +46,7 @@
                 BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
 
             <Entry Text="{Binding StartDate}"
-                   Placeholder="Start Date (XX/XX/XXXX)"
+                   Placeholder="Start Date DD/MM/YYYY"
                    Margin="15,10"/>
         </Border>
 
@@ -56,13 +56,21 @@
                 BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
 
             <Entry Text="{Binding EndDate}"
-                   Placeholder="End Date (XX/XX/XXXX)"
+                   Placeholder="End Date DD/MM/YYYY"
                    Margin="15,10"/>
         </Border>
 
         <!-- BUTTON -->
         <Button Text="Rent This Item"
                 Command="{Binding CreateRentalCommand}"
+                HeightRequest="50"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="White"/>
+
+        <!-- SEE REVIEWS -->
+        <Button Text="See Reviews"
+                Command="{Binding NavigateToReviewsCommand}"
+                CommandParameter="{Binding Item}"
                 HeightRequest="50"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                 TextColor="White"/>

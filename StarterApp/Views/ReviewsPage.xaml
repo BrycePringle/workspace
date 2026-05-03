@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StarterApp.Views.ReviewsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:StarterApp.ViewModels"
+             Title="Items for Rent"
+             x:Name="ThisPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Add Review -->
+        <Border Grid.Row="0"
+                Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                StrokeThickness="1"
+                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+                Margin="15,10">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Padding="15,10" Spacing="8">
+                <Label Text="Leave a Review"
+                       FontSize="16"
+                       FontAttributes="Bold"/>
+                <Entry Placeholder="Your name"
+                       Text="{Binding NewReviewName}"/>
+                <Entry Placeholder="Description"
+                       Text="{Binding NewReviewDescription}"/>
+                <Entry Placeholder="Rating (0-5)"
+                       Text="{Binding NewReviewRating}"
+                       Keyboard="Numeric"/>
+                <Button Text="Submit Review"
+                        Command="{Binding AddReviewCommand}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="White"
+                        CornerRadius="8"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Reviews List -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Reviews}"
+                        SelectionMode="None">
+
+            <CollectionView.EmptyView>
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="No reviews found"
+                           FontSize="18"
+                           TextColor="Gray"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="15,10">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding BindingContext.NavigateToItemDetailCommand, Source={x:Reference ThisPage}}"
+                                CommandParameter="{Binding .}"/>
+                        </Grid.GestureRecognizers>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="1"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="0"
+                               Text="{Binding Rating, StringFormat='⭐ {0:F2} / 5.00'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="Black"/>
+
+                        <Label Grid.Row="1"
+                               Text="{Binding Description}"
+                               FontSize="18"
+                               TextColor="Black"
+                               Margin="0,2,0,0"/>
+
+                        <Label Grid.Row="2"
+                               Text="{Binding DatePublished}"
+                               FontSize="18"
+                               TextColor="Black"
+                               Margin="0,2,0,0"/>
+
+                        <Label Grid.Row="3"
+                               Text="{Binding Name}"
+                               FontSize="18"
+                               TextColor="Black"
+                               Margin="0,2,0,0"/>
+
+                        <BoxView Grid.Row="4"
+                                 BackgroundColor="AliceBlue"
+                                 HeightRequest="1"
+                                 Margin="0,10,0,0"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator Grid.Row="1"
+                           IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           Color="DodgerBlue"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"/>
+    </Grid>
+
+</ContentPage>

@@ -87,6 +87,7 @@
                 <Entry Text="{Binding DailyRate}"
                        Placeholder="DailyRate"
                        ReturnType="Next"
+                       Keyboard="Numeric"
                        Margin="15,10" />
             </Border>
 
