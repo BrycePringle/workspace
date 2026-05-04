@@ -65,7 +65,7 @@ public partial class RentalsViewModel : BaseViewModel
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine($"Loading");
+            // load both incoming and outgoing separately, RentalDetail class contains rental data + user data + item data
             IncomingRentals = new ObservableCollection<RentalDetail>(await _rentalRepository.GetIncomingAsync(currentUser.Id));
             OutgoingRentals = new ObservableCollection<RentalDetail>(await _rentalRepository.GetOutgoingAsync(currentUser.Id));
         }

@@ -80,12 +80,13 @@ public partial class ReviewsViewModel : BaseViewModel
     private async Task AddReviewAsync()
     {
         if (IsBusy) return;
-        if (!ValidateForm()) return;
+        if (!ValidateForm()) return; // validate
 
         try
         {
             IsBusy = true;
 
+            // convert decimal
             decimal.TryParse(_newReviewRating, out var rating);
             var review = new Review
             {
@@ -96,6 +97,7 @@ public partial class ReviewsViewModel : BaseViewModel
                 DatePublished = DateTimeOffset.UtcNow
             };
 
+            // create review
             await _reviewRepository.CreateAsync(review);
             await Application.Current.MainPage.DisplayAlert("Success", "Review submitted!", "OK");
             await _navigationService.NavigateBackAsync();
@@ -138,10 +140,5 @@ public partial class ReviewsViewModel : BaseViewModel
         }
 
         return true;
-    }
-
-    private static bool IsValidDecimal(string s)
-    {
-        return decimal.TryParse(s, out _);
     }
 }

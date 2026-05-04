@@ -64,14 +64,12 @@ public partial class CreateItemViewModel : BaseViewModel
 
             // request location permission
             var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-
             if (status != PermissionStatus.Granted)
             {
                 status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
             }
-
             if (status != PermissionStatus.Granted)
-                throw new PermissionException("Location permission was denied");
+                throw new Exception();
 
             // if ok, then use location service
             var location = await _locationService.GetCurrentLocationAsync();
@@ -101,6 +99,7 @@ public partial class CreateItemViewModel : BaseViewModel
         }
     }
 
+    // validation for user input
     private bool ValidateForm()
     {
         if (string.IsNullOrWhiteSpace(itemTitle))
@@ -127,20 +126,17 @@ public partial class CreateItemViewModel : BaseViewModel
             return false;
         }
 
-        if (!isValidDecimal(dailyRate))
+        if (!decimal.TryParse(dailyRate, out var rate))
         {
             SetError("Daily rate must be a valid decimal number");
             return false;
         }
-        return true;
-    }
 
-    /// @brief Validates an email address format
-    /// @param email The email address to validate
-    /// @return True if the email format is valid, false otherwise
-    /// @details Uses regex pattern matching to validate email format
-    private static bool isValidDecimal(string s)
-    {
-        return decimal.TryParse(s, out _);
+        if (rate < 0)
+        {
+            SetError("DailyRate cannot be negative");
+            return false;
+        }
+        return true;
     }
 }

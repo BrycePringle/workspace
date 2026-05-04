@@ -81,18 +81,16 @@ public partial class ItemDetailViewModel : BaseViewModel
             // display message if double booking
             bool canRent = await _rentalService.CanRentItemAsync(ItemId, convertedStartDate, convertedEndDate);
 
-            // checks if valid, no need for logic
-            await _rentalService.RequestRentalAsync(ItemId, UserId, convertedStartDate, convertedEndDate);
-
             if (!canRent)
             {
                 string message = "Dates overlap with existing booking!";
                 await Application.Current.MainPage.DisplayAlert("Error", message, "OK");
+                return;
             }
-            else
-            {
-                await Application.Current.MainPage.DisplayAlert("Success", "Rental requested!", "OK");
-            }
+            // checks if valid, no need for logic
+            await _rentalService.RequestRentalAsync(ItemId, UserId, convertedStartDate, convertedEndDate);
+            await Application.Current.MainPage.DisplayAlert("Success", "Rental requested!", "OK");
+            
             await _navigationService.NavigateBackAsync();
         }
         catch (Exception ex)
