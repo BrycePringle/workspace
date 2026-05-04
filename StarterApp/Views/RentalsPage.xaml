@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StarterApp.Views.RentalsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:StarterApp.ViewModels"
+             Title="Rentals"
+             x:Name="ThisPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Outgoing -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="15,10">
+            <Label Grid.Row="0"
+                   Text="Outgoing Listings"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,30"
+                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </Grid>
+
+        <RefreshView Grid.Row="1"
+                     Command="{Binding LoadRentalsCommand}">
+            <CollectionView ItemsSource="{Binding OutgoingRentals}"
+                            SelectionMode="None">
+
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="No items found"
+                               FontSize="18"
+                               TextColor="Gray"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="15,10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0"
+                                   Text="{Binding ItemTitle}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="Black"/>
+
+                            <Label Grid.Row="1"
+                                   Text="{Binding Status}"
+                                   FontSize="14"
+                                   TextColor="Gray"
+                                   Margin="0,2,0,0"/>
+
+                            <Label Grid.Row="2"
+                                   Text="{Binding PersonName}"
+                                   FontSize="14"
+                                   TextColor="Gray"
+                                   Margin="0,2,0,0"/>
+
+                            <Label Grid.Row="3"
+                                   Text="{Binding TotalCost, StringFormat='£{0:F2}'}"
+                                   FontSize="14"
+                                   TextColor="Gray"
+                                   Margin="0,2,0,0"/>
+                            <Grid Grid.Row="4" ColumnDefinitions="*,*" Margin="0,8,0,0" IsVisible="{Binding IsPending}">
+                                <Button Grid.Column="0"
+                                        Text="Accept"
+                                        BackgroundColor="Green"
+                                        TextColor="White"
+                                        Margin="0,0,5,0"
+                                        Command="{Binding Source={x:Reference ThisPage}, Path=ViewModel.AcceptRentalCommand}"
+                                        CommandParameter="{Binding RentalId}"/>
+                                <Button Grid.Column="1"
+                                        Text="Deny"
+                                        BackgroundColor="Red"
+                                        TextColor="White"
+                                        Margin="5,0,0,0"
+                                        Command="{Binding Source={x:Reference ThisPage}, Path=ViewModel.DenyRentalCommand}"
+                                        CommandParameter="{Binding RentalId}"/>
+                            </Grid>
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Incoming -->
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" Margin="15,10">
+            <Label Grid.Row="0"
+                   Text="Requested Rentals"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,30"
+                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </Grid>
+
+        <RefreshView Grid.Row="3"
+                     Command="{Binding LoadRentalsCommand}">
+            <CollectionView ItemsSource="{Binding IncomingRentals}"
+                            SelectionMode="None">
+
+                <CollectionView.EmptyView>
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="No items found"
+                               FontSize="18"
+                               TextColor="Gray"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="15,10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0"
+                                   Text="{Binding ItemTitle}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="Black"/>
+
+                            <Label Grid.Row="1"
+                                   Text="{Binding Status}"
+                                   FontSize="14"
+                                   TextColor="Gray"
+                                   Margin="0,2,0,0"/>
+
+                            <Label Grid.Row="2"
+                                   Text="{Binding PersonName}"
+                                   FontSize="14"
+                                   TextColor="Gray"
+                                   Margin="0,2,0,0"/>
+
+                            <Label Grid.Row="3"
+                                   Text="{Binding TotalCost}"
+                                   FontSize="14"
+                                   TextColor="Gray"
+                                   Margin="0,2,0,0"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <ActivityIndicator Grid.Row="0" Grid.RowSpan="4"
+                           IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           Color="DodgerBlue"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"/>
+    </Grid>
+
+</ContentPage>

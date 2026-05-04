@@ -17,7 +17,7 @@ public class RentalService : IRentalService
     {
         // Check for date overlaps with existing approved rentals
         var existingRentals = await _rentalRepository.GetByItemIdAsync(itemId);
-        return !existingRentals.AsEnumerable().Any<Rental>(r => // simplify
+        return !existingRentals.AsEnumerable().Any<Rental>(r => 
             r.Status == "Approved" &&
             r.StartDate < endDate &&
             r.EndDate > startDate);
@@ -26,15 +26,15 @@ public class RentalService : IRentalService
     public async Task<Rental> RequestRentalAsync(int itemId, int borrowerId, DateTime startDate, DateTime endDate)
     {
         var item = await _itemRepository.GetByIdAsync(itemId)
-            ?? throw new Exception("Item not found");
+            ?? throw new Exception();
 
         var available = await CanRentItemAsync(itemId, startDate, endDate);
         if (!available)
-            throw new Exception("Item is not available for the selected dates");
+            throw new Exception();
 
         var days = (endDate - startDate).Days;
         if (days <= 0)
-            throw new Exception("End date must be after start date");
+            throw new Exception();
 
         var rental = new Rental
         {
@@ -52,10 +52,10 @@ public class RentalService : IRentalService
     public async Task ApproveRentalAsync(int rentalId)
     {
         var rental = await _rentalRepository.GetByIdAsync(rentalId)
-            ?? throw new Exception("Rental not found");
+            ?? throw new Exception();
 
         if (rental.Status != "Pending")
-            throw new Exception("Only pending rentals can be approved");
+            throw new Exception();
 
         rental.Status = "Approved";
         await _rentalRepository.UpdateAsync(rental);
@@ -64,10 +64,10 @@ public class RentalService : IRentalService
         public async Task RejectRentalAsync(int rentalId)
     {
         var rental = await _rentalRepository.GetByIdAsync(rentalId)
-            ?? throw new Exception("Rental not found");
+            ?? throw new Exception();
 
         if (rental.Status != "Pending")
-            throw new Exception("Only pending rentals can be rejected");
+            throw new Exception();
 
         rental.Status = "Rejected";
         await _rentalRepository.UpdateAsync(rental);
@@ -79,7 +79,7 @@ public class RentalService : IRentalService
             ?? throw new Exception("Rental not found");
 
         if (rental.Status != "Approved")
-            throw new Exception("Only approved rentals can be returned");
+            throw new Exception();
 
         rental.Status = "Returned";
         await _rentalRepository.UpdateAsync(rental);

@@ -104,6 +104,12 @@ public partial class MainViewModel : BaseViewModel
         await _navigationService.NavigateToAsync("CreateItemPage");
     }
 
+    [RelayCommand]
+    private async Task NavigateToRentalsAsync()
+    {
+        await _navigationService.NavigateToAsync("RentalsPage");
+    }
+
     /// @brief Navigates to the settings page
     /// @details Relay command that navigates to the application settings page
     /// @return A task representing the asynchronous navigation operation

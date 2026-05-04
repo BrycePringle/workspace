@@ -12,6 +12,8 @@ public class Item
 {
     public int Id { get; set; }
     [Required]
+    public int UserId { get; set; }
+    [Required]
     public string Title { get; set; }
     [Required]
     public string Description { get; set; }
@@ -19,4 +21,7 @@ public class Item
     public decimal DailyRate { get; set; }
     public string Category { get; set; }
     public GeoPoint Location { get; set; }
+
+    public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
+    public User User { get; set; } = null!;
 }

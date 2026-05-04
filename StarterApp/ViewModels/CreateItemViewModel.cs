@@ -11,9 +11,13 @@ namespace StarterApp.ViewModels;
 
 public partial class CreateItemViewModel : BaseViewModel
 {
+    private readonly IAuthenticationService _authService;
     private readonly INavigationService _navigationService;
     private readonly IItemRepository _itemRepository;
     private readonly ILocationService _locationService;
+
+    [ObservableProperty]
+    private User? currentUser;
 
     [ObservableProperty]
     private string itemTitle = string.Empty;
@@ -32,38 +36,21 @@ public partial class CreateItemViewModel : BaseViewModel
 
     private GeoPoint location;
 
-    public CreateItemViewModel(INavigationService navigationService, IItemRepository itemRepository, ILocationService locationService)
+    public CreateItemViewModel(INavigationService navigationService, IItemRepository itemRepository, ILocationService locationService, IAuthenticationService authService)
     {
+        _authService = authService;
         _navigationService = navigationService;
         _locationService = locationService;
         _itemRepository = itemRepository;
         Title = "List Item";
+
+        LoadUser();
     }
-/*
-    [RelayCommand]
-    private async Task CreateItemAsync()
+    private void LoadUser()
     {
-        if (IsBusy)
-            return;
-
-        if (!ValidateForm())
-            return;
-
-        var item = new Item
-        {
-            Title = title,
-            Description = description,
-            DailyRate = decimal.Parse(dailyRate),
-            Category = category,
-            Location = location
-        };
-
-        // main page?
-        await _itemRepository.CreateAsync(item);
-        await Application.Current.MainPage.DisplayAlert("Success", "Item created!", "OK");
-        await _navigationService.NavigateBackAsync();
+        CurrentUser = _authService.CurrentUser;
     }
-*/
+
 
     [RelayCommand]
     private async Task CreateItemAsync() {
@@ -91,6 +78,7 @@ public partial class CreateItemViewModel : BaseViewModel
 
             var item = new Item
             {
+                UserId = CurrentUser.Id,
                 Title = itemTitle,
                 Description = description,
                 DailyRate = decimal.TryParse(dailyRate, out var rate) ? rate : 0,

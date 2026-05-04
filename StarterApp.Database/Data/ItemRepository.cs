@@ -19,6 +19,9 @@ public class ItemRepository : IItemRepository
     public async Task<Item> GetByIdAsync(int id) =>
         await _context.Items.FindAsync(id);
 
+    public async Task<Item> GetByUserIdAsync(int userId) =>
+        await _context.Items.FindAsync(userId);
+
     public async Task<Item> CreateAsync(Item item)
     {
         _context.Items.Add(item);

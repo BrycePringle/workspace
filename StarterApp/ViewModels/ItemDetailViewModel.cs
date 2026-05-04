@@ -78,8 +78,21 @@ public partial class ItemDetailViewModel : BaseViewModel
             DateTime convertedStartDate = DateTime.ParseExact(StartDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             DateTime convertedEndDate = DateTime.ParseExact(EndDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
+            // display message if double booking
+            bool canRent = await _rentalService.CanRentItemAsync(ItemId, convertedStartDate, convertedEndDate);
+
+            // checks if valid, no need for logic
             await _rentalService.RequestRentalAsync(ItemId, UserId, convertedStartDate, convertedEndDate);
-            await Application.Current.MainPage.DisplayAlert("Success", "Rental requested!", "OK");
+
+            if (!canRent)
+            {
+                string message = "Dates overlap with existing booking!";
+                await Application.Current.MainPage.DisplayAlert("Error", message, "OK");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Success", "Rental requested!", "OK");
+            }
             await _navigationService.NavigateBackAsync();
         }
         catch (Exception ex)

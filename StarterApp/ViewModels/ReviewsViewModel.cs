@@ -63,7 +63,6 @@ public partial class ReviewsViewModel : BaseViewModel
         try
         {
             var reviews = await _reviewRepository.GetByItemIdAsync(_itemId); // was itemId (lowercase)
-            await Application.Current.MainPage.DisplayAlert("Debug", $"ItemId: {_itemId}, Reviews found: {reviews.Count}", "OK");
             Reviews = new ObservableCollection<Review>(reviews);        
         }
         catch (Exception ex)

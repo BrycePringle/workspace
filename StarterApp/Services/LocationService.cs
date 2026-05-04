@@ -15,7 +15,6 @@ public class LocationService : ILocationService
                 Timeout = TimeSpan.FromSeconds(10)
             });
 
-            // uses last location if that doesn't work
             location ??= await Geolocation.Default.GetLastKnownLocationAsync();
 
             if (location == null)
